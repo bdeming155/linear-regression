@@ -2,4 +2,4 @@ cmake_minimum_required(VERSION 3.0)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(load_data main.cpp read_file.cpp)
+add_executable(load_data main.cpp parse_data.cpp)

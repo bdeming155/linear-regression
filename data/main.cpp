@@ -1,11 +1,15 @@
 
 /// @file
 #include <iostream>
-#include "read_file.h"
+#include "parse_data.h"
 
 int main() {
 
   std::cout << "Sup bro" <<  std::endl;
-  read_csv();
+
+  ParseData parser;
+
+  parser.parse_input_file("hey.json");
+
   return 0;
 }
