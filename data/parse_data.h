@@ -17,70 +17,113 @@
 // TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 // SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /// @file
-#ifndef SVM_READ_FILE_H
-#define SVM_READ_FILE_H
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <vector>
 
-using namespace std;
 
 void read_csv();
 
 class ParseData {
+private:
+  struct Data{};
+  virtual void read_csv(std::string input_file) =0;
+  virtual void read_txt(std::string input_file) =0;
 
 public:
-  void parse_input_file(std::string input_filename){
+  void parse_input_file(std::string input_filename) {
 
-    std::string  file_prefix = input_filename.substr(input_filename.find_last_of(".") + 1);
+    std::string file_prefix =
+        input_filename.substr(input_filename.find_last_of(".") + 1);
 
-    if(file_prefix == "json"){
-      std::cout << "JSON file" << std::endl;
-    } else if(file_prefix ==  "txt"){
-      std::cout << "TXT file" << std::endl;
-    } else if(file_prefix ==  "csv"){
-      std::cout << "CSV file" << std::endl;
-    } else{
-      std::cout << "Could not identify file type!" << std::endl;
+    if (file_prefix == "json") {
+      std::cout << "JSON file" ;
+    } else if (file_prefix == "txt") {
+      std::cout << "TXT file" ;
+
+      read_txt(input_filename);
+
+
+    } else if (file_prefix == "csv") {
+      std::cout << "CSV file"  ;
+      read_csv(input_filename);
+
+
+    } else {
+      std::cout << "Could not identify file type!" ;
     }
   };
-
-private:
-  void read_csv() {
-
-    // File pointer
-    fstream fin;
-
-    string input_file;
-    cout << "Enter input file path "; // Type a number and press enter
-    cin >> input_file;                // Get user input from the keyboard
-
-    // Open an existing file
-    fin.open(input_file, ios::in);
-
-    // Read the Data from the file
-    // as String Vector
-    string line, temp;
-
-    // Loop through each row
-    while (fin >> temp) {
-
-      // read an entire row and
-      // store it in a string variable 'line'
-      getline(fin, line);
-
-      // used for breaking words
-      stringstream s(line);
-
-      // Loop through each element of the line
-      while (s.good()) {
-        string element;
-        getline(s, element, ',');
-        cout << element << endl;
-      }
-    }
-  }
-
 };
 
-#endif // SVM_READ_FILE_H
+
+class ParseHealthData : public ParseData{
+  public:
+
+    struct Data {
+        int id;
+        std::vector<float> lcavol;
+        std::vector<float>  lweight;
+        std::vector<int>  age;
+        std::vector<float>  lbph;
+        std::vector<float>  svi;
+        std::vector<float>  lcp;
+        std::vector<float>  gleason;
+        std::vector<float>  pgg45;
+        std::vector<float>  lpsa;
+        std::vector<std::string>  train;
+      } ;
+
+    void read_txt(std::string input_file){
+      // Create a text string, which is used to output the text file
+      std::string myText;
+
+      // Read from the text file
+      std::ifstream MyReadFile(input_file);
+
+      // Use a while loop together with the getline() function to read the file line by line
+      while (getline (MyReadFile, myText)) {
+        // Output the text from the file
+        std::cout << myText;
+      }
+
+      // Close the file
+      MyReadFile.close();
+    }
+
+    void read_csv(std::string input_file) {
+      std::cout << input_file;
+
+      // File pointer
+      std::fstream fin;
+
+//      std::cout << "Enter input file path "; // Type a number and press enter
+//      std::cin >> input_file;                // Get user input from the keyboard
+
+      // Open an existing file
+      fin.open(input_file, std::ios::in);
+
+      // Read the Data from the file
+      // as String Vector
+      std::string line, temp;
+
+      // Loop through each row
+      while (fin >> temp) {
+
+        // read an entire row and
+        // store it in a string variable 'line'
+        getline(fin, line);
+
+        // used for breaking words
+        std::stringstream s(line);
+
+        // Loop through each element of the line
+        while (s.good()) {
+          std::string element;
+          getline(s, element, ',');
+          std::cout << element;
+        }
+      }
+    }
+
+};
