@@ -36,10 +36,8 @@ public:
     if (file_prefix == "json") {
       std::cout << "JSON file" ;
     } else if (file_prefix == "txt") {
-      std::cout << "TXT file" ;
 
       read_txt(input_filename);
-
 
     } else if (file_prefix == "csv") {
       std::cout << "CSV file"  ;
@@ -61,7 +59,7 @@ class ParseHealthData : public ParseData{
   public:
     class HealthData : public ParseData::Data {
     public:
-          int id;
+          std::vector<int> id;
           std::vector<float> lcavol;
           std::vector<float>  lweight;
           std::vector<int>  age;
@@ -79,6 +77,7 @@ class ParseHealthData : public ParseData{
       // Create a text string, which is used to output the text file
       std::string myText;
       HealthData output_data;
+      int line_num = 0;
 
       // Read from the text file
       std::ifstream MyReadFile(input_file);
@@ -87,13 +86,56 @@ class ParseHealthData : public ParseData{
       while (getline (MyReadFile, myText)) {
 
         std::stringstream line(myText);
+        int line_ind = 0;
+
+        if (line_num > 0){
         while (line.good()) {
           std::string substr;
           std::getline(line, substr, ',');
-          std::cout << substr << "\n";
+          switch(line_ind){
+          case 0:
+            output_data.id.push_back(std::stoi(substr));
+            break;
+          case 1:
+            output_data.lcavol.push_back(std::stof(substr));
+            break;
+          case 2:
+            output_data.lweight.push_back(std::stof(substr));
+            break;
+          case 3:
+            output_data.age.push_back(std::stof(substr));
+            break;
+          case 4:
+            output_data.lbph.push_back(std::stof(substr));
+            break;
+          case 5:
+            output_data.svi.push_back(std::stof(substr));
+            break;
+          case 6:
+            output_data.lcp.push_back(std::stof(substr));
+            break;
+          case 7:
+            output_data.gleason.push_back(std::stof(substr));
+            break;
+          case 8:
+            output_data.pgg45.push_back(std::stof(substr));
+            break;
+          case 9:
+            output_data.lpsa.push_back(std::stof(substr));
+            break;
+          case 10:
+            output_data.train.push_back(substr);
+            break;
+          }
           //v.push_back(substr);
+          line_ind += 1;
         }
       }
+      line_num +=1;
+      }
+
+      for(std::string i : output_data.train)
+        std::cout << i << "\n";
 
       // Close the file
       MyReadFile.close();
@@ -101,7 +143,7 @@ class ParseHealthData : public ParseData{
       return output_data;
     }
 
-    void read_csv(std::string input_file) {
+    Data read_csv(std::string input_file) {
       std::cout << input_file;
 
       // File pointer
