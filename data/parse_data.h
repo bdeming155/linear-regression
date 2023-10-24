@@ -26,12 +26,8 @@
 void read_csv();
 
 class ParseData {
-private:
-  struct Data{};
-  virtual void read_csv(std::string input_file) =0;
-  virtual void read_txt(std::string input_file) =0;
-
 public:
+  class Data{};
   void parse_input_file(std::string input_filename) {
 
     std::string file_prefix =
@@ -54,41 +50,55 @@ public:
       std::cout << "Could not identify file type!" ;
     }
   };
+private:
+  virtual Data read_csv(std::string input_file) = 0;
+  virtual Data read_txt(std::string input_file) = 0;
+
 };
 
 
 class ParseHealthData : public ParseData{
   public:
+    class HealthData : public ParseData::Data {
+    public:
+          int id;
+          std::vector<float> lcavol;
+          std::vector<float>  lweight;
+          std::vector<int>  age;
+          std::vector<float>  lbph;
+          std::vector<float>  svi;
+          std::vector<float>  lcp;
+          std::vector<float>  gleason;
+          std::vector<float>  pgg45;
+          std::vector<float>  lpsa;
+          std::vector<std::string>  train;
+    };
 
-    struct Data {
-        int id;
-        std::vector<float> lcavol;
-        std::vector<float>  lweight;
-        std::vector<int>  age;
-        std::vector<float>  lbph;
-        std::vector<float>  svi;
-        std::vector<float>  lcp;
-        std::vector<float>  gleason;
-        std::vector<float>  pgg45;
-        std::vector<float>  lpsa;
-        std::vector<std::string>  train;
-      } ;
 
-    void read_txt(std::string input_file){
+    Data read_txt(std::string input_file){
       // Create a text string, which is used to output the text file
       std::string myText;
+      HealthData output_data;
 
       // Read from the text file
       std::ifstream MyReadFile(input_file);
 
       // Use a while loop together with the getline() function to read the file line by line
       while (getline (MyReadFile, myText)) {
-        // Output the text from the file
-        std::cout << myText;
+
+        std::stringstream line(myText);
+        while (line.good()) {
+          std::string substr;
+          std::getline(line, substr, ',');
+          std::cout << substr << "\n";
+          //v.push_back(substr);
+        }
       }
 
       // Close the file
       MyReadFile.close();
+
+      return output_data;
     }
 
     void read_csv(std::string input_file) {
