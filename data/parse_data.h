@@ -41,7 +41,6 @@ public:
 
     } else if (file_prefix == "csv") {
       std::cout << "CSV file"  ;
-      read_csv(input_filename);
 
 
     } else {

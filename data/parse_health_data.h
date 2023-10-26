@@ -25,44 +25,43 @@
 
 
 
-class ParseHealthData : public ParseData{
+class ParseHealthData : public ParseData {
 public:
-  class HealthData : public ParseData::Data {
+  class HealthData : public Data {
   public:
     std::vector<int> id;
     std::vector<float> lcavol;
-    std::vector<float>  lweight;
-    std::vector<int>  age;
-    std::vector<float>  lbph;
-    std::vector<float>  svi;
-    std::vector<float>  lcp;
-    std::vector<float>  gleason;
-    std::vector<float>  pgg45;
-    std::vector<float>  lpsa;
-    std::vector<std::string>  train;
+    std::vector<float> lweight;
+    std::vector<int> age;
+    std::vector<float> lbph;
+    std::vector<float> svi;
+    std::vector<float> lcp;
+    std::vector<float> gleason;
+    std::vector<float> pgg45;
+    std::vector<float> lpsa;
+    std::vector<std::string> train;
   };
 
-
-  Data read_txt(std::string input_file){
+  Data read_txt(std::string input_file_path) {
     // Create a text string, which is used to output the text file
-    std::string myText;
+    std::string line_data;
     HealthData output_data;
     int line_num = 0;
 
     // Read from the text file
-    std::ifstream MyReadFile(input_file);
+    std::ifstream input_file(input_file_path);
 
     // Use a while loop together with the getline() function to read the file line by line
-    while (getline (MyReadFile, myText)) {
+    while (getline(input_file, line_data)) {
 
-      std::stringstream line(myText);
+      std::stringstream line(line_data);
       int line_ind = 0;
 
-      if (line_num > 0){
+      if (line_num > 0) {
         while (line.good()) {
           std::string substr;
           std::getline(line, substr, ',');
-          switch(line_ind){
+          switch (line_ind) {
           case 0:
             output_data.id.push_back(std::stoi(substr));
             break;
@@ -97,18 +96,14 @@ public:
             output_data.train.push_back(substr);
             break;
           }
-          //v.push_back(substr);
           line_ind += 1;
         }
       }
-      line_num +=1;
+      line_num += 1;
     }
 
-    for(std::string i : output_data.train)
-      std::cout << i << "\n";
-
     // Close the file
-    MyReadFile.close();
+    input_file.close();
 
     return output_data;
   }
@@ -116,37 +111,40 @@ public:
   Data read_csv(std::string input_file) {
     std::cout << input_file;
 
-    // File pointer
-    std::fstream fin;
+    //    // File pointer
+    //    std::fstream fin;
+    //
+    //    //      std::cout << "Enter input file path "; // Type a number and press enter
+    //    //      std::cin >> input_file;                // Get user input from the keyboard
+    //
+    //    // Open an existing file
+    //    fin.open(input_file, std::ios::in);
+    //
+    //    // Read the Data from the file
+    //    // as String Vector
+    //    std::string line, temp;
+    //
+    //    // Loop through each row
+    //    while (fin >> temp) {
+    //
+    //      // read an entire row and
+    //      // store it in a string variable 'line'
+    //      getline(fin, line);
+    //
+    //      // used for breaking words
+    //      std::stringstream s(line);
+    //
+    //      // Loop through each element of the line
+    //      while (s.good()) {
+    //        std::string element;
+    //        getline(s, element, ',');
+    //        std::cout << element;
+    //      }
+    //    }
+    //  }
+    HealthData output_data;
 
-    //      std::cout << "Enter input file path "; // Type a number and press enter
-    //      std::cin >> input_file;                // Get user input from the keyboard
-
-    // Open an existing file
-    fin.open(input_file, std::ios::in);
-
-    // Read the Data from the file
-    // as String Vector
-    std::string line, temp;
-
-    // Loop through each row
-    while (fin >> temp) {
-
-      // read an entire row and
-      // store it in a string variable 'line'
-      getline(fin, line);
-
-      // used for breaking words
-      std::stringstream s(line);
-
-      // Loop through each element of the line
-      while (s.good()) {
-        std::string element;
-        getline(s, element, ',');
-        std::cout << element;
-      }
-    }
+    return output_data;
   }
-
 };
 
