@@ -1,18 +1,14 @@
-
-/// @file
 #include <iostream>
 #include "parse_health_data.h"
+#include "parse_data.h"
 
 int main() {
 
   std::cout << "Sup bro" <<  std::endl;
 
-  //parser.parse_input_file("hey.json");
+  ParseHealthData health_data_parser;
 
-  ParseHealthData health_data;
-  health_data.parse_input_file("/Users/bdeming/Documents/regression_exercises/data/Prostate_Cancer.txt");
-//  health_data.parse_input_file("hey.json");
-//  health_data.read_csv();
+  ParseData::Data health_data = health_data_parser.parse_input_file("data/raw_data/health_data.txt");
 
   return 0;
 }

@@ -1,22 +1,3 @@
-// COPYRIGHTS AND PERMISSIONS:
-// Copyright 2021 MORSE Corp All rights reserved.
-//
-// Subject to any rights the U.S. Government may have in the Software,
-// permission is granted to the person rightfully obtaining a copy of this
-// Software from MORSE Corp to use, copy, modify and distribute the
-// Software only as expressly authorized in writing from MORSE Corp.
-//
-// The above copyright notice and this permission notice shall be included
-// in all permitted copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-// CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-// SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-/// @file
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -24,9 +5,18 @@
 #include "parse_data.h"
 
 
-
+/**
+  * Parses health data txt files with the following data headers: id, lcavol,
+  * lweight, age, lbph, svi, lcp, gleason, pgg45, lpsa, train. Loads the data
+  * into the HealthData container where each data category is stored as an
+  * attribute.
+ */
 class ParseHealthData : public ParseData {
 public:
+
+  /**
+  * Stores health data which is loaded from the txt file.
+  */
   class HealthData : public Data {
   public:
     std::vector<int> id;
@@ -42,6 +32,12 @@ public:
     std::vector<std::string> train;
   };
 
+  /**
+  * Reads a txt file and saves the data into a HealthData container.
+  *
+  * @param input_filepath Path to the data file
+  * @return The parsed data
+   */
   Data read_txt(std::string input_file_path) {
     // Create a text string, which is used to output the text file
     std::string line_data;
@@ -55,13 +51,14 @@ public:
     while (getline(input_file, line_data)) {
 
       std::stringstream line(line_data);
-      int line_ind = 0;
+      int col_num = 0;
 
+      // Start saving the data after the first (header) line
       if (line_num > 0) {
         while (line.good()) {
           std::string substr;
           std::getline(line, substr, ',');
-          switch (line_ind) {
+          switch (col_num) {
           case 0:
             output_data.id.push_back(std::stoi(substr));
             break;
@@ -96,7 +93,7 @@ public:
             output_data.train.push_back(substr);
             break;
           }
-          line_ind += 1;
+          col_num += 1;
         }
       }
       line_num += 1;
@@ -108,43 +105,4 @@ public:
     return output_data;
   }
 
-  Data read_csv(std::string input_file) {
-    std::cout << input_file;
-
-    //    // File pointer
-    //    std::fstream fin;
-    //
-    //    //      std::cout << "Enter input file path "; // Type a number and press enter
-    //    //      std::cin >> input_file;                // Get user input from the keyboard
-    //
-    //    // Open an existing file
-    //    fin.open(input_file, std::ios::in);
-    //
-    //    // Read the Data from the file
-    //    // as String Vector
-    //    std::string line, temp;
-    //
-    //    // Loop through each row
-    //    while (fin >> temp) {
-    //
-    //      // read an entire row and
-    //      // store it in a string variable 'line'
-    //      getline(fin, line);
-    //
-    //      // used for breaking words
-    //      std::stringstream s(line);
-    //
-    //      // Loop through each element of the line
-    //      while (s.good()) {
-    //        std::string element;
-    //        getline(s, element, ',');
-    //        std::cout << element;
-    //      }
-    //    }
-    //  }
-    HealthData output_data;
-
-    return output_data;
-  }
 };
-
