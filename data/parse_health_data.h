@@ -42,7 +42,7 @@ public:
     std::string line_data;
     HealthData output_data;
     int line_num = 0;
-    std:: cout << input_file_path;
+
     // Read from the text file
     std::ifstream input_file(input_file_path);
 

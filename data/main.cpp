@@ -5,9 +5,13 @@ int main() {
 
   ParseHealthData health_data_parser;
 
-  ParseHealthData::HealthData health_data = health_data_parser.parse_input_file("data/raw_data/health_data.txt");
+  std::cout << "Enter path to data file: \n";
+  std::string input_file;
+  std::cin >> input_file;
 
-  for (auto val :  health_data.gleason){
+  ParseHealthData::HealthData health_data = health_data_parser.parse_input_file(input_file);
+
+  for (auto val :  health_data.id){
     std::cout << val << "\n";}
 
   return 0;
