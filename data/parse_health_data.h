@@ -2,7 +2,6 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
-#include "parse_data.h"
 
 
 /**
@@ -11,13 +10,13 @@
   * into the HealthData container where each data category is stored as an
   * attribute.
  */
-class ParseHealthData : public ParseData {
+class ParseHealthData {
 public:
 
   /**
   * Stores health data which is loaded from the txt file.
   */
-  class HealthData : public Data {
+  class HealthData {
   public:
     std::vector<int> id;
     std::vector<float> lcavol;
@@ -38,12 +37,12 @@ public:
   * @param input_filepath Path to the data file
   * @return The parsed data
    */
-  Data read_txt(std::string input_file_path) {
+  HealthData parse_input_file(std::string input_file_path) {
     // Create a text string, which is used to output the text file
     std::string line_data;
     HealthData output_data;
     int line_num = 0;
-
+    std:: cout << input_file_path;
     // Read from the text file
     std::ifstream input_file(input_file_path);
 
