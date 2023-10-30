@@ -9,6 +9,6 @@
 ## How to Run Data Parser
 1. `cd build/data`
 2. `./load_data`
-3. Enter the path to the data file when prompted.
+3. Enter the path to the data file when prompted (use the example file in the `raw_data` directory.)
 
 The IDs from the health data file should print to the console. 
