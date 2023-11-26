@@ -5,37 +5,37 @@
 
 
 /**
-  * Parses health data txt files with the following data headers: id, lcavol,
-  * lweight, age, lbph, svi, lcp, gleason, pgg45, lpsa, train. Loads the data
-  * into the HealthData container where each data category is stored as an
+  * Parses health health_data_ex txt files with the following health_data_ex headers: id, lcavol,
+  * lweight, age, lbph, svi, lcp, gleason, pgg45, lpsa, train. Loads the health_data_ex
+  * into the HealthData container where each health_data_ex category is stored as an
   * attribute.
  */
 class ParseHealthData {
 public:
 
   /**
-  * Stores health data which is loaded from the txt file.
+  * Stores health health_data_ex which is loaded from the txt file.
   */
-  class HealthData {
-  public:
-    std::vector<int> id;
-    std::vector<float> lcavol;
-    std::vector<float> lweight;
-    std::vector<int> age;
-    std::vector<float> lbph;
-    std::vector<float> svi;
-    std::vector<float> lcp;
-    std::vector<float> gleason;
-    std::vector<float> pgg45;
-    std::vector<float> lpsa;
-    std::vector<std::string> train;
+  struct HealthData{
+        std::vector<int> id;
+        std::vector<float> lcavol;
+        std::vector<float> lweight;
+        std::vector<int> age;
+        std::vector<float> lbph;
+        std::vector<float> svi;
+        std::vector<float> lcp;
+        std::vector<float> gleason;
+        std::vector<float> pgg45;
+        std::vector<float> lpsa;
+        std::vector<std::string> train;
+
   };
 
   /**
-  * Reads a txt file and saves the data into a HealthData container.
+  * Reads a txt file and saves the health_data_ex into a HealthData container.
   *
-  * @param input_filepath Path to the data file
-  * @return The parsed data
+  * @param input_filepath Path to the health_data_ex file
+  * @return The parsed health_data_ex
    */
   HealthData parse_input_file(std::string input_file_path) {
     // Create a text string, which is used to output the text file
@@ -52,7 +52,7 @@ public:
       std::stringstream line(line_data);
       int col_num = 0;
 
-      // Start saving the data after the first (header) line
+      // Start saving the health_data_ex after the first (header) line
       if (line_num > 0) {
         while (line.good()) {
           std::string substr;

@@ -1,11 +1,13 @@
 #include <iostream>
 #include "parse_health_data.h"
 
+
+
 int main() {
 
   ParseHealthData health_data_parser;
 
-  std::cout << "Enter path to data file: \n";
+  std::cout << "Enter path to health_data_ex file: \n";
   std::string input_file;
   std::cin >> input_file;
 

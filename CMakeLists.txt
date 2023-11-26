@@ -3,6 +3,5 @@ project(svm)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_subdirectory(inference)
-add_subdirectory(train)
-add_subdirectory(data)
+add_subdirectory(lin_reg)
+add_subdirectory(health_data_ex)
