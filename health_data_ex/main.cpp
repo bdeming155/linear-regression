@@ -2,7 +2,6 @@
 #include "parse_health_data.h"
 
 
-
 int main() {
 
   ParseHealthData health_data_parser;

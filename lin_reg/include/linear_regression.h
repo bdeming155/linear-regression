@@ -42,39 +42,42 @@ public:
 
    Regression(ArrayXXd X, ArrayXXd y_train_input, bool standardize_data_flag_input){
 
-    //beta = beta_input;
     y_train = y_train_input;
     standardize_data_flag = standardize_data_flag_input;
     preprocessed_data = ArrayXXd::Ones(X.rows(),X.cols()+1);
 
     ArrayXXd new_standardized_data = standardize_data(X);
 
-    //std::cout << new_standardized_data;
-
     preprocessed_data << ArrayXXd::Ones(static_cast<int>(new_standardized_data.rows()), 1), new_standardized_data;
 
-    // self.beta = np.linalg.inv(self.X_train_intercept.T @ self.X_train_intercept)
-    // @ self.X_train_intercept.T @ self.y_train
+    fit_model();
 
-    // FIT THE MODEL
-    beta = (preprocessed_data.matrix().transpose() * preprocessed_data.matrix()).inverse() * preprocessed_data.matrix().transpose() * y_train.matrix();
-    // PREDICT
+    float prediction = predict();
 
-    // HOW TO MATRIX MULTIPLY 1D MATRICES???
-
-//    Matrix2d x_test(1,3);
-//    x_test(0,0) = 1;
-//    x_test(0,1) = 3.2;
-//    x_test(0,2) = 4.5;
-//    std::cout << x_test.matrix() << std::endl<< std::endl;
-//    std::cout << beta.matrix() << std::endl<< std::endl;
-
-    //Matrix2d prediction = x_test * beta.matrix();
+//    MatrixXd prediction = x_test * beta.matrix();
+    std::cout << prediction;
 
    }
 
+   void fit_model() {
+     beta =
+         (preprocessed_data.matrix().transpose() * preprocessed_data.matrix())
+             .inverse() *
+         preprocessed_data.matrix().transpose() * y_train.matrix();
+   }
 
+   float predict(){
 
+     MatrixXd x_test(1,3);
+     x_test(0,0) = 1;
+     x_test(0,1) = 3.2;
+     x_test(0,2) = 4.5;
+
+     MatrixXd prediction = x_test * beta.matrix();
+
+     return prediction(0);
+
+   }
 
 };
 
