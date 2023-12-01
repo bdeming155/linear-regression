@@ -13,8 +13,6 @@ using namespace Eigen;
 class RegressionBase{
 
 private:
-
-
   ArrayXXd standardize_data(ArrayXXd input_data){
     int num_rows = static_cast<int>(input_data.rows());
     int num_cols = static_cast<int>(input_data.cols());
@@ -48,7 +46,7 @@ public:
 
   }
 
-  virtual void fit_model(){}
+  virtual void fit_model() = 0;
 
   float predict(MatrixXd x_test){
 
@@ -68,7 +66,6 @@ public:
                  .inverse() *
              preprocessed_data.matrix().transpose() * y_train.matrix();
        }
-
 
 };
 

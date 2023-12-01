@@ -66,15 +66,10 @@ int main() {
 //  y_train(1,0) = 0.98;
 //  y_train(2,0) = 0.4;
 
-  //LinearRegression test(matrices.X, matrices.y_train, true);
-  RegressionBase test = new LinearRegression(matrices.X, matrices.y_train, true);
-  test.fit_model();
-  std::cout << test.beta;
-  //test.predict()
-    //std::cout << test.preprocessed_data;
+  RegressionBase* test = new LinearRegression(matrices.X, matrices.y_train, true);
+//  test.fit_model();
+//  std::cout << test.beta;
 
-    //Matrix2d a = test.y_train.inverse();
-    //std::cout << a;
 
   return 0;
 }
