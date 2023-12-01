@@ -4,7 +4,12 @@
 #include "../../health_data_ex/parse_health_data.h"
 
 
-ArrayXXd form_matrices(ParseHealthData::HealthData health_data){
+struct LinRegMats {
+  ArrayXXd X;
+  ArrayXXd y_train;
+};
+
+LinRegMats form_matrices(ParseHealthData::HealthData health_data){
 
   int num_rows = health_data.id.size();
   // UPDATE THIS
@@ -26,8 +31,11 @@ ArrayXXd form_matrices(ParseHealthData::HealthData health_data){
 
     }
 
+    LinRegMats return_vals;
+    return_vals.X = X;
+    return_vals.y_train = y;
 
-  return X, y;
+  return return_vals;
 
 }
 
@@ -42,23 +50,27 @@ int main() {
 
   ParseHealthData::HealthData health_data = health_data_parser.parse_input_file(input_file);
 
-  ArrayXXd X, y_train = form_matrices(health_data);
-  std::cout << X1 << std::endl;
+  LinRegMats matrices = form_matrices(health_data);
+  //std::cout << matrices.X << std::endl;
 
-  ArrayXXd X(3,2);
-  X(0,0) = 3.7;
-  X(1,0) = 4.6;
-  X(0,1) = 2.4;
-  X(1,1) = 0.98;
-  X(2,0) = 0.78;
-  X(2,1) = 0.12;
+//  ArrayXXd X(3,2);
+//  X(0,0) = 3.7;
+//  X(1,0) = 4.6;
+//  X(0,1) = 2.4;
+//  X(1,1) = 0.98;
+//  X(2,0) = 0.78;
+//  X(2,1) = 0.12;
+//
+//  ArrayXXd y_train(3,1);
+//  y_train(0,0) = 0.43;
+//  y_train(1,0) = 0.98;
+//  y_train(2,0) = 0.4;
 
-  ArrayXXd y_train(3,1);
-  y_train(0,0) = 0.43;
-  y_train(1,0) = 0.98;
-  y_train(2,0) = 0.4;
-
-  Regression test(X, y_train, true);
+  //LinearRegression test(matrices.X, matrices.y_train, true);
+  RegressionBase test = new LinearRegression(matrices.X, matrices.y_train, true);
+  test.fit_model();
+  std::cout << test.beta;
+  //test.predict()
     //std::cout << test.preprocessed_data;
 
     //Matrix2d a = test.y_train.inverse();
