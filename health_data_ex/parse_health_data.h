@@ -2,6 +2,9 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <Eigen/Dense>
+
+using namespace Eigen;
 
 
 /**
@@ -29,6 +32,8 @@ public:
         std::vector<float> lpsa;
         std::vector<std::string> train;
 
+        ArrayXXd X_train;
+        ArrayXXd y_train;
   };
 
   /**
@@ -41,6 +46,7 @@ public:
     // Create a text string, which is used to output the text file
     std::string line_data;
     HealthData output_data;
+
     int line_num = 0;
 
     // Read from the text file
@@ -100,6 +106,28 @@ public:
 
     // Close the file
     input_file.close();
+
+    int num_rows = output_data.id.size();
+    // UPDATE THIS
+    int num_cols = 8;
+
+    ArrayXXd X(num_rows, num_cols);
+    ArrayXXd y(num_rows, 1);
+    output_data.X_train = X;
+    output_data.y_train = y;
+
+    for (int row = 0; row < num_rows; row++) {
+      output_data.X_train(row,0) = output_data.lcavol[row];
+      output_data.X_train(row,1) = output_data.lweight[row];
+      output_data.X_train(row,2) = output_data.age[row];
+      output_data.X_train(row,3) = output_data.lbph[row];
+      output_data.X_train(row,4) = output_data.svi[row];
+      output_data.X_train(row,5) = output_data.lcp[row];
+      output_data.X_train(row,6) = output_data.gleason[row];
+      output_data.X_train(row,7) = output_data.pgg45[row];
+      output_data.y_train(row,0) = output_data.lpsa[row];
+
+    }
 
     return output_data;
   }
