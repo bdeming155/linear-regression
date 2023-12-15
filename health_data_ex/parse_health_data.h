@@ -16,12 +16,19 @@ using namespace Eigen;
 class ParseHealthData {
 public:
 
+int NUM_INPUT_VARS = 8;
+
   /**
   * Stores health health_data_ex which is loaded from the txt file.
   */
   struct HealthData{
+        // Sample ID
         std::vector<int> id;
+
+        // Output variable
         std::vector<float> lcavol;
+
+        // Input variables
         std::vector<float> lweight;
         std::vector<int> age;
         std::vector<float> lbph;
@@ -32,6 +39,7 @@ public:
         std::vector<float> lpsa;
         std::vector<std::string> train;
 
+        // Regression Matrices
         ArrayXXd X_train;
         ArrayXXd y_train;
   };
@@ -107,9 +115,9 @@ public:
     // Close the file
     input_file.close();
 
+    // Create Regression Matrices
     int num_rows = output_data.id.size();
-    // UPDATE THIS
-    int num_cols = 8;
+    int num_cols = NUM_INPUT_VARS;
 
     ArrayXXd X(num_rows, num_cols);
     ArrayXXd y(num_rows, 1);

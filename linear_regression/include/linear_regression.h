@@ -10,12 +10,20 @@
 
 using namespace Eigen;
 
+/**
+  * Base class for linear regression models. Includes methods to preprocess data,
+  * fit a model, and make predictions.
+ */
 class Regression{
 
 public:
 
+  // Model coefficients for the regression model
   ArrayXXd beta;
 
+  /**
+   * Pre-process the data by standardizing the mean and standard deviation.
+   */
   ArrayXXd standardize_data(ArrayXXd input_data){
     int num_rows = static_cast<int>(input_data.rows());
     int num_cols = static_cast<int>(input_data.cols());
@@ -30,9 +38,14 @@ public:
 
     return standardized_data;
   }
-
+  /**
+   * Fit a regression model to the input training data.
+   */
   virtual void fit_model(ArrayXXd X, ArrayXXd y_train_input, bool standardize_data_flag_input) = 0;
 
+  /**
+   * Make a prediction on input variable given the model fit to the training data.
+   */
   float predict(MatrixXd x_test){
 
     MatrixXd prediction = x_test * beta.matrix();
@@ -42,6 +55,10 @@ public:
 
 };
 
+
+/**
+   * Simple linear regression implementation.
+ */
 class LinearRegression : public Regression{
 
 public:
@@ -64,13 +81,17 @@ public:
 };
 
 
+/**
+   * Ridge regression implementation.
+ */
 class RidgeRegression : public Regression{
 
 public:
   float lambda_ridge;
 
-  RidgeRegression(float lambda_ridge_input){
+  RidgeRegression(float lambda_ridge_input = 10){
 
+    // Lambda controls the amount of shrinkage of the ridge regression coefficients
     lambda_ridge = lambda_ridge_input;
 
   }
