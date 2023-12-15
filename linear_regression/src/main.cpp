@@ -16,7 +16,12 @@ int main() {
 
   LinearRegression test;
   test.fit_model(health_data.X_train, health_data.y_train);
-  std::cout << test.beta;
+
+  // Test sample to run prediction on
+  Eigen::MatrixXd test_data{{1,1,1,1,1,1,1,1,1}};
+  float result;
+  result = test.predict(test_data);
+  std::cout << result << std::endl;
 
 //  RidgeRegression test(10);
 //    test.fit_model(health_data.X_train, health_data.y_train);
