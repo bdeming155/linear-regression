@@ -4,4 +4,3 @@ project(svm)
 set(CMAKE_CXX_STANDARD 14)
 
 add_subdirectory(linear_regression)
-add_subdirectory(health_data_ex)

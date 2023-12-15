@@ -28,7 +28,6 @@ public:
       standardized_data.col(i) = (input_data.col(i) - input_data.col(i).mean()) / std_dev;
     }
 
-
     return standardized_data;
   }
 
