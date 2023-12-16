@@ -16,11 +16,11 @@ int main() {
 
   LinearRegression test;
   test.fit_model(health_data.X_train, health_data.y_train);
-
   // Test sample to run prediction on
-  Eigen::MatrixXd test_data{{1,1,1,1,1,1,1,1,1}};
   float result;
-  result = test.predict(test_data);
+  std::cout << health_data.X_test.row(0).rows() << std::endl;
+  Eigen::MatrixXd go(health_data.X_test.row(0));
+  result = test.predict(go);
   std::cout << result << std::endl;
 
 //  RidgeRegression test(10);

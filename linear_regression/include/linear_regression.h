@@ -47,7 +47,7 @@ public:
    * Make a prediction on input variable given the model fit to the training data.
    */
   float predict(MatrixXd x_test){
-
+    std::cout << beta.matrix() << std::endl;
     MatrixXd prediction = x_test * beta.matrix();
 
     return prediction(0);

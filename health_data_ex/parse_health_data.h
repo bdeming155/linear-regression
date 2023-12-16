@@ -17,6 +17,7 @@ class ParseHealthData {
 public:
 
 int NUM_INPUT_VARS = 8;
+float PERCENT_DATA_TRAIN = 0.9;
 
   /**
   * Stores health health_data_ex which is loaded from the txt file.
@@ -42,6 +43,9 @@ int NUM_INPUT_VARS = 8;
         // Regression Matrices
         ArrayXXd X_train;
         ArrayXXd y_train;
+
+        ArrayXXd X_test;
+        ArrayXXd y_test;
   };
 
   /**
@@ -117,24 +121,49 @@ int NUM_INPUT_VARS = 8;
 
     // Create Regression Matrices
     int num_rows = output_data.id.size();
-    int num_cols = NUM_INPUT_VARS;
+    int num_cols = NUM_INPUT_VARS+1;
 
-    ArrayXXd X(num_rows, num_cols);
-    ArrayXXd y(num_rows, 1);
-    output_data.X_train = X;
-    output_data.y_train = y;
+    int train_rows = static_cast<int>(PERCENT_DATA_TRAIN*num_rows);
+    int test_rows = num_rows - train_rows;
+
+    // Train data
+    ArrayXXd X_train(train_rows, num_cols-1);
+    ArrayXXd y_train(train_rows, 1);
+    output_data.X_train = X_train;
+    output_data.y_train = y_train;
+
+    // Test data
+    ArrayXXd X_test(test_rows, num_cols);
+    ArrayXXd y_test(test_rows, 1);
+    output_data.X_test = X_test;
+    output_data.y_test = y_test;
 
     for (int row = 0; row < num_rows; row++) {
-      output_data.X_train(row,0) = output_data.lcavol[row];
-      output_data.X_train(row,1) = output_data.lweight[row];
-      output_data.X_train(row,2) = output_data.age[row];
-      output_data.X_train(row,3) = output_data.lbph[row];
-      output_data.X_train(row,4) = output_data.svi[row];
-      output_data.X_train(row,5) = output_data.lcp[row];
-      output_data.X_train(row,6) = output_data.gleason[row];
-      output_data.X_train(row,7) = output_data.pgg45[row];
-      output_data.y_train(row,0) = output_data.lpsa[row];
 
+      if (row < train_rows) {
+//        output_data.X_train(row, 0) = 1;
+        output_data.X_train(row, 0) = output_data.lcavol[row];
+        output_data.X_train(row, 1) = output_data.lweight[row];
+        output_data.X_train(row, 2) = output_data.age[row];
+        output_data.X_train(row, 3) = output_data.lbph[row];
+        output_data.X_train(row, 4) = output_data.svi[row];
+        output_data.X_train(row, 5) = output_data.lcp[row];
+        output_data.X_train(row, 6) = output_data.gleason[row];
+        output_data.X_train(row, 7) = output_data.pgg45[row];
+        output_data.y_train(row, 0) = output_data.lpsa[row];
+      }
+      else{
+        output_data.X_test(row-train_rows, 0) = 1;
+        output_data.X_test(row-train_rows, 1) = output_data.lcavol[row];
+        output_data.X_test(row-train_rows, 2) = output_data.lweight[row];
+        output_data.X_test(row-train_rows, 3) = output_data.age[row];
+        output_data.X_test(row-train_rows, 4) = output_data.lbph[row];
+        output_data.X_test(row-train_rows, 5) = output_data.svi[row];
+        output_data.X_test(row-train_rows, 6) = output_data.lcp[row];
+        output_data.X_test(row-train_rows, 7) = output_data.gleason[row];
+        output_data.X_test(row-train_rows, 8) = output_data.pgg45[row];
+        output_data.y_test(row-train_rows, 0) = output_data.lpsa[row];
+      }
     }
 
     return output_data;
