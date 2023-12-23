@@ -22,23 +22,6 @@ public:
   ArrayXXd beta;
 
   /**
-   * Pre-process the data by standardizing the mean and standard deviation.
-   */
-  ArrayXXd standardize_data(ArrayXXd input_data){
-    int num_rows = static_cast<int>(input_data.rows());
-    int num_cols = static_cast<int>(input_data.cols());
-    ArrayXXd standardized_data(num_rows, num_cols);
-
-    for (int i = 0; i < num_cols; i++) {
-
-      double std_dev = std::sqrt(((input_data.col(i) - input_data.col(i).mean()).square()).sum()/(input_data.col(i).size()));
-
-      standardized_data.col(i) = (input_data.col(i) - input_data.col(i).mean()) / std_dev;
-    }
-
-    return standardized_data;
-  }
-  /**
    * Fit a regression model to the input training data.
    */
   virtual void fit_model(ArrayXXd X, ArrayXXd y_train_input, bool standardize_data_flag_input) = 0;
@@ -65,19 +48,11 @@ public:
 
   void fit_model(ArrayXXd X_train, ArrayXXd y_train, bool standardize_data_flag = true) {
 
-    ArrayXXd X_train_intercept = ArrayXXd::Ones(X_train.rows(),X_train.cols()+1);
-
-    if (standardize_data_flag) {
-      X_train = standardize_data(X_train);
-    }
-    X_train_intercept << ArrayXXd::Ones(static_cast<int>(X_train.rows()), 1), X_train;
-
     beta =
-             (X_train_intercept.matrix().transpose() * X_train_intercept.matrix())
+             (X_train.matrix().transpose() * X_train.matrix())
                  .inverse() *
-        X_train_intercept.matrix().transpose() * y_train.matrix();
+        X_train.matrix().transpose() * y_train.matrix();
        }
-
 };
 
 
@@ -100,9 +75,9 @@ public:
 
     ArrayXXd X_train_intercept = ArrayXXd::Ones(X_train.rows(),X_train.cols()+1);
 
-    if (standardize_data_flag) {
-      X_train = standardize_data(X_train);
-    }
+//    if (standardize_data_flag) {
+//      X_train = standardize_data(X_train);
+//    }
     X_train_intercept << ArrayXXd::Ones(static_cast<int>(X_train.rows()), 1), X_train;
 
     MatrixXd A = lambda_ridge * MatrixXd::Identity(static_cast<int>(X_train_intercept.cols()),static_cast<int>(X_train_intercept.cols()));

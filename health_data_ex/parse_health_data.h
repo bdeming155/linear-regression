@@ -3,6 +3,7 @@
 #include <sstream>
 #include <vector>
 #include <Eigen/Dense>
+#include <Eigen/Core>
 
 using namespace Eigen;
 
@@ -16,8 +17,23 @@ using namespace Eigen;
 class ParseHealthData {
 public:
 
+  ParseHealthData(std::string input_file_path){
+
+    parse_input_file(input_file_path);
+
+    get_lin_reg_mats();
+
+  }
+
 int NUM_INPUT_VARS = 8;
-float PERCENT_DATA_TRAIN = 0.9;
+
+  struct LinRegMats {
+    MatrixXd X;
+    MatrixXd y;
+  };
+
+  LinRegMats lin_reg_mats;
+
 
   /**
   * Stores health health_data_ex which is loaded from the txt file.
@@ -27,26 +43,23 @@ float PERCENT_DATA_TRAIN = 0.9;
         std::vector<int> id;
 
         // Output variable
-        std::vector<float> lcavol;
+        std::vector<double> lcavol;
 
         // Input variables
-        std::vector<float> lweight;
-        std::vector<int> age;
-        std::vector<float> lbph;
-        std::vector<float> svi;
-        std::vector<float> lcp;
-        std::vector<float> gleason;
-        std::vector<float> pgg45;
-        std::vector<float> lpsa;
+        std::vector<double> lweight;
+        std::vector<double> age;
+        std::vector<double> lbph;
+        std::vector<double> svi;
+        std::vector<double> lcp;
+        std::vector<double> gleason;
+        std::vector<double> pgg45;
+        std::vector<double> lpsa;
         std::vector<std::string> train;
 
-        // Regression Matrices
-        ArrayXXd X_train;
-        ArrayXXd y_train;
-
-        ArrayXXd X_test;
-        ArrayXXd y_test;
   };
+
+  HealthData parsed_data;
+
 
   /**
   * Reads a txt file and saves the health_data_ex into a HealthData container.
@@ -54,7 +67,7 @@ float PERCENT_DATA_TRAIN = 0.9;
   * @param input_filepath Path to the health_data_ex file
   * @return The parsed health_data_ex
    */
-  HealthData parse_input_file(std::string input_file_path) {
+  void parse_input_file(std::string input_file_path) {
     // Create a text string, which is used to output the text file
     std::string line_data;
     HealthData output_data;
@@ -77,37 +90,37 @@ float PERCENT_DATA_TRAIN = 0.9;
           std::getline(line, substr, ',');
           switch (col_num) {
           case 0:
-            output_data.id.push_back(std::stoi(substr));
+            parsed_data.id.push_back(std::stoi(substr));
             break;
           case 1:
-            output_data.lcavol.push_back(std::stof(substr));
+            parsed_data.lcavol.push_back(std::stof(substr));
             break;
           case 2:
-            output_data.lweight.push_back(std::stof(substr));
+            parsed_data.lweight.push_back(std::stof(substr));
             break;
           case 3:
-            output_data.age.push_back(std::stof(substr));
+            parsed_data.age.push_back(std::stof(substr));
             break;
           case 4:
-            output_data.lbph.push_back(std::stof(substr));
+            parsed_data.lbph.push_back(std::stof(substr));
             break;
           case 5:
-            output_data.svi.push_back(std::stof(substr));
+            parsed_data.svi.push_back(std::stof(substr));
             break;
           case 6:
-            output_data.lcp.push_back(std::stof(substr));
+            parsed_data.lcp.push_back(std::stof(substr));
             break;
           case 7:
-            output_data.gleason.push_back(std::stof(substr));
+            parsed_data.gleason.push_back(std::stof(substr));
             break;
           case 8:
-            output_data.pgg45.push_back(std::stof(substr));
+            parsed_data.pgg45.push_back(std::stof(substr));
             break;
           case 9:
-            output_data.lpsa.push_back(std::stof(substr));
+            parsed_data.lpsa.push_back(std::stof(substr));
             break;
           case 10:
-            output_data.train.push_back(substr);
+            parsed_data.train.push_back(substr);
             break;
           }
           col_num += 1;
@@ -118,55 +131,48 @@ float PERCENT_DATA_TRAIN = 0.9;
 
     // Close the file
     input_file.close();
+    
+  }
 
-    // Create Regression Matrices
-    int num_rows = output_data.id.size();
+  void get_lin_reg_mats(){
+    int num_rows = parsed_data.id.size();
     int num_cols = NUM_INPUT_VARS+1;
 
-    int train_rows = static_cast<int>(PERCENT_DATA_TRAIN*num_rows);
-    int test_rows = num_rows - train_rows;
+    MatrixXd X(num_rows, num_cols);
+    MatrixXd y(num_rows,1);
 
-    // Train data
-    ArrayXXd X_train(train_rows, num_cols-1);
-    ArrayXXd y_train(train_rows, 1);
-    output_data.X_train = X_train;
-    output_data.y_train = y_train;
+    // https://stackoverflow.com/questions/17036818/initialise-eigenvector-with-stdvector
+    X.col(0) = VectorXd::Ones(num_rows);
+    X.col(1) = standardize_data(Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(parsed_data.lcavol.data(), num_rows));
+    X.col(2) = standardize_data(Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(parsed_data.lweight.data(), num_rows));
+    X.col(3) = standardize_data(Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(parsed_data.age.data(), num_rows));
+    X.col(4) = standardize_data(Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(parsed_data.lbph.data(), num_rows));
+    X.col(5) = standardize_data(Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(parsed_data.svi.data(), num_rows));
+    X.col(6) = standardize_data(Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(parsed_data.lcp.data(), num_rows));
+    X.col(7) = standardize_data(Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(parsed_data.gleason.data(), num_rows));
+    X.col(8) = standardize_data(Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(parsed_data.pgg45.data(), num_rows));
 
-    // Test data
-    ArrayXXd X_test(test_rows, num_cols);
-    ArrayXXd y_test(test_rows, 1);
-    output_data.X_test = X_test;
-    output_data.y_test = y_test;
+    y = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(parsed_data.lpsa.data(), num_rows);
 
-    for (int row = 0; row < num_rows; row++) {
+    lin_reg_mats.X = X;
+    lin_reg_mats.y = y;
 
-      if (row < train_rows) {
-//        output_data.X_train(row, 0) = 1;
-        output_data.X_train(row, 0) = output_data.lcavol[row];
-        output_data.X_train(row, 1) = output_data.lweight[row];
-        output_data.X_train(row, 2) = output_data.age[row];
-        output_data.X_train(row, 3) = output_data.lbph[row];
-        output_data.X_train(row, 4) = output_data.svi[row];
-        output_data.X_train(row, 5) = output_data.lcp[row];
-        output_data.X_train(row, 6) = output_data.gleason[row];
-        output_data.X_train(row, 7) = output_data.pgg45[row];
-        output_data.y_train(row, 0) = output_data.lpsa[row];
-      }
-      else{
-        output_data.X_test(row-train_rows, 0) = 1;
-        output_data.X_test(row-train_rows, 1) = output_data.lcavol[row];
-        output_data.X_test(row-train_rows, 2) = output_data.lweight[row];
-        output_data.X_test(row-train_rows, 3) = output_data.age[row];
-        output_data.X_test(row-train_rows, 4) = output_data.lbph[row];
-        output_data.X_test(row-train_rows, 5) = output_data.svi[row];
-        output_data.X_test(row-train_rows, 6) = output_data.lcp[row];
-        output_data.X_test(row-train_rows, 7) = output_data.gleason[row];
-        output_data.X_test(row-train_rows, 8) = output_data.pgg45[row];
-        output_data.y_test(row-train_rows, 0) = output_data.lpsa[row];
-      }
-    }
+  }
 
-    return output_data;
+  /**
+   * Pre-process the data by standardizing the mean and standard deviation.
+   */
+  VectorXd standardize_data(VectorXd input_data){
+
+    ArrayXd input_array(input_data);
+
+    ArrayXd standardized_data(input_data.size());
+
+    double std_dev = std::sqrt(((input_array - input_array.mean()).square()).sum()/(input_array.size()));
+
+    standardized_data = (input_array - input_array.mean()) / std_dev;
+
+    return VectorXd(standardized_data);
   }
 
 };
